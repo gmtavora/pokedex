@@ -1,55 +1,94 @@
-import React from 'react'
-import { SafeAreaView, View, StyleSheet, Text, FlatList, TextInput } from 'react-native'
+import React, { useState, useEffect } from 'react'
+import { SafeAreaView, View, StyleSheet, Text, FlatList, TextInput, ActivityIndicator } from 'react-native'
 import Constants from 'expo-constants'
 
+import { showError } from '../utils.js'
 import ListItem from '../components/ListItem.js'
+import api from '../services/api.js'
 
 export default props => {
+  const [pokemons, setPokemons] = useState([])
+  const [count, setCount] = useState(20)
 
-  function viewPokemonDetails(pokemon) {
-    return () => props.navigation.navigate("Pokemon", pokemon)
+  useEffect(async () => {
+    let newList = []
+
+    try {
+      const { data } = await api.get(`https://pokeapi.co/api/v2/pokemon`)
+
+      setPokemons(data.results)
+    } catch (err) {
+      showError(err)
+    }
+  }, [])
+
+  async function paginate(offset) {
+    let newList = pokemons
+
+    try {
+      const { data } = await api.get(`https://pokeapi.co/api/v2/pokemon?limit=20&offset=${offset}`)
+
+      setPokemons(newList.concat(data.results))
+      setCount(count+20)
+    } catch(err) {
+      showError(err)
+    }
   }
 
-  function getPokemon({ item: pokemon }) {
+  function getPokemon({ item }) {
     return (
       <ListItem
-        id={pokemon.id}
-        species={pokemon.species}
-        sprites={pokemon.sprites}
-        types={pokemon.types}
-        action={viewPokemonDetails(pokemon)}
+        url={item.url}
+        action={(pokemon, colors) => props.navigation.navigate("Pokemon", { pokemon, colors })}
       />
     )
   }
 
-  return (
-    <SafeAreaView style={styles.container}>
-      {/* Título */}
-      <Text style={styles.title}>Pokédex</Text>
+  if (pokemons.length !== 0)
+  {
+    return (
+      <SafeAreaView style={styles.container}>
+        {/* Título */}
+        <Text style={styles.title}>Pokédex</Text>
 
-      {/* Descrição */}
-      <Text style={styles.description}>Select a Pokémon from the list or use the field below to search by name.</Text>
-      
-      {/* Caixa de busca */}
-      <TextInput 
-        style={styles.searchBox}
-      />
-
-      {/* Lista de opções */}
-      <View style={styles.pokemonList}>
-        <FlatList
-          data={pokemons}
-          renderItem={getPokemon}
-          keyExtractor={item => item.id.toString()}
-          showsVerticalScrollIndicator={false}
+        {/* Descrição */}
+        <Text style={styles.description}>Select a Pokémon from the list or use the field below to search.</Text>
+        
+        {/* Caixa de busca */}
+        <TextInput 
+          style={styles.searchBox}
         />
-      </View>
 
-    </SafeAreaView>
-  )
+        {/* Lista de opções */}
+        <View style={styles.pokemonList}>
+          <FlatList
+            data={pokemons}
+            renderItem={getPokemon}
+            keyExtractor={item => item.name}
+            showsVerticalScrollIndicator={false}
+            numColumns={2}
+            onEndReached={() => paginate(count)}
+          />
+        </View>
+      </SafeAreaView>
+    )
+  }
+  else
+  {
+    return (
+        <View style={styles.activityContainer}>
+          <ActivityIndicator size="large" color="#000" />
+        </View>
+      )
+  }
 }
 
 const styles = StyleSheet.create({ 
+  activityContainer: {
+    flex:1,
+    justifyContent: "center",
+    alignItems: "center"
+  },
   container: {
     flex: 1,
     marginLeft: 30,
@@ -83,78 +122,3 @@ const styles = StyleSheet.create({
     flex: 7
   }
 })
-
-const pokemons = [{
-  id: 1,
-  species: {
-    name: "bulbasaur"
-  },
-  sprites: {
-    front_default: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/1.png"
-  },
-  types: [{
-    name: "grass"
-  }, {
-    name: "poison"
-  }]
-}, {
-  id: 2,
-  species: {
-    name: "ivysaur"
-  },
-  sprites: {
-    front_default: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/2.png"
-  },
-  types: [{
-    name: "grass"
-  }, {
-    name: "poison"
-  },]
-}, {
-  id: 3,
-  species: {
-    name: "venusaur"
-  },
-  sprites: {
-    front_default: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/3.png"
-  },
-  types: [{
-    name: "grass"
-  }, {
-    name: "poison"
-  }]
-}, {
-  id: 4,
-  species: {
-    name: "charmander"
-  },
-  sprites: {
-    front_default: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/4.png"
-  },
-  types: [{
-    name: "fire"
-  }]
-}, {
-  id: 5,
-  species: {
-    name: "charmeleon"
-  },
-  sprites: {
-    front_default: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/5.png"
-  },
-  types: [{
-    name: "fire"
-  }]
-}, {
-  id: 6,
-  species: {
-    name: "charizard"
-  },
-  sprites: {
-    front_default: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/6.png"
-  },
-  types: [{
-    name: "fire"
-  }]
-}
-]
