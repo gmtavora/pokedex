@@ -1,3 +1,17 @@
+/*
+ * ListItem.js
+ * -----------
+ * Componente responsável pela exibição do Pokémon na FlatList da Home.
+ * 
+ * Props
+ * -----
+ *  - url: O endereço do Pokémon na API.
+ *  - action: Navegação já configurada para a view Pokémon (Details), com o objeto
+ *            do Pokémon e as cores como parâmetros.
+ *  - navigation: Objeto de navegação para que seja possível chamar o método goBack().
+ * 
+ */
+
 import React, { useState, useEffect } from 'react'
 import { TouchableOpacity, Text, StyleSheet, Image, View, ActivityIndicator } from 'react-native'
 
@@ -9,15 +23,21 @@ export default props => {
   const [colors, setColors] = useState({})
   const [ready, setReady] = useState(false)
 
+  /* Busca as informações do Pokémon na API */
   useEffect(async () => {
+    let isMounted = true
+
     try {
       const { data } = await api.get(props.url)
-      setPokemon(data)
+      if (isMounted) setPokemon(data)
     } catch(err) {
       showError(err)
     }
+
+    return () => { isMounted = false }
   }, [])
 
+  /* Recebe os tipos do Pokémon para configurar as cores da UI */
   useEffect(() => {
     if (pokemon.hasOwnProperty("types")) {
       const colors = getColors(pokemon.types[0].type.name)
@@ -27,6 +47,7 @@ export default props => {
     }
   }, [pokemon])
 
+  /* Renderização */
   if (!ready)
     return (
       <View style={[styles.container, styles.grayBackground]}>
@@ -66,8 +87,7 @@ const styles = StyleSheet.create({
     padding: 20,
     borderRadius: 10,
     margin: 5,
-    borderBottomWidth: 10,
-    borderBottomLeftRadius: 2
+    borderBottomWidth: 10
   },
   nameContainer: {
     flexDirection: "row",

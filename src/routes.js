@@ -1,3 +1,14 @@
+/*
+ *  routes.js
+ *  ---------
+ *  Arquivo que armazena as configurações do React Navigation.
+ * 
+ *  Parâmetros
+ *  ----------
+ *  Nenhum.
+ * 
+ */
+
 import React from 'react'
 import { NavigationContainer } from '@react-navigation/native'
 import { createStackNavigator } from '@react-navigation/stack'

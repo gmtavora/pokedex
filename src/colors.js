@@ -1,3 +1,10 @@
+/*
+ * colors.js
+ * ---------
+ * Arquivo que define todas as cores da UI.
+ * 
+ */
+
 export const GREEN = "#70B870"
 export const LIGHT_GREEN = "#88E388"
 export const RED = "#AE1D24"

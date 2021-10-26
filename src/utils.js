@@ -1,3 +1,10 @@
+/*
+ * utils.js
+ * --------
+ * Arquivo que define funções utilizadas por vários arquivos da aplicação.
+ * 
+ */
+
 import { Alert } from 'react-native'
 
 import * as COLORS from './colors.js'
