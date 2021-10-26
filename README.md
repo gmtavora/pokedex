@@ -15,8 +15,9 @@ criar uma tela somente para busca, em que seria possível filtrar os resultados.
 ## Instalação
 
 1. Clone o repositório com ```git clone https://github.com/gmtavora/pokedex/```
-2. Instale as dependências necessárias com ```npm i```
-3. Execute o Expo com ```expo start ```
-4. Leia o código QR com o Expo seu celular.
+2. Navegue até a pasta do projeto ```cd pokedex```
+3. Instale as dependências necessárias com ```npm i```
+4. Execute o Expo com ```expo start ```
+5. Leia o código QR com o Expo em seu celular.
 
 ## Preview
