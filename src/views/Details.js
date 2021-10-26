@@ -14,7 +14,6 @@
 import React, { useState, useEffect } from 'react'
 import { Text, StyleSheet, SafeAreaView, View, Image, ScrollView, ActivityIndicator } from 'react-native'
 import Constants from 'expo-constants'
-import Icon from 'react-native-vector-icons/FontAwesome'
 
 import { capitalize, showError } from '../utils.js'
 import api from '../services/api.js'
@@ -26,13 +25,17 @@ export default props => {
 
   /* Busca na API as informações da espécie. */
   useEffect(async () => {
+    let isMounted = true
+
     try {
       const species = await api.get(pokemon.species.url)
       const result = await api.get(species.data.evolution_chain.url)
 
       /* Concatena os nomes dos estágios de evolução do Pokémon */
-      let evolutionString = capitalize(result.data.chain.species.name) + " > "
+      let evolutionString = capitalize(result.data.chain.species.name)
       let next = result.data.chain
+
+      if (next && next.evolves_to.length) evolutionString += " > "
 
       while (true) {
         if (next && next.evolves_to.length) {
@@ -49,7 +52,9 @@ export default props => {
 
       species.data.evolutionString = evolutionString
 
-      setSpecies(species.data)
+      if (isMounted) setSpecies(species.data)
+
+      return () => { isMounted = false }
     } catch(err) {
       showError(err)
     }

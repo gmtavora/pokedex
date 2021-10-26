@@ -10,7 +10,7 @@
  */
 
 import React, { useState, useEffect } from 'react'
-import { SafeAreaView, View, StyleSheet, Text, FlatList, TextInput, ActivityIndicator } from 'react-native'
+import { SafeAreaView, View, StyleSheet, Text, FlatList, ActivityIndicator, useWindowDimensions } from 'react-native'
 import { SearchBar } from 'react-native-elements'
 import Constants from 'expo-constants'
 
@@ -21,10 +21,13 @@ import api from '../services/api.js'
 export default props => {
   const [pokemons, setPokemons] = useState([])
   const [count, setCount] = useState(20)
+  const [awaitingPagination, setAwaitingPagination] = useState(false)
   const [search, setSearch] = useState("")
   const [searchResults, setSearchResults] = useState({})
   const [searchSent, setSearchSent] = useState(false)
   const [waitingForResults, setWaitingForResults] = useState(false)
+
+  const windowHeight = useWindowDimensions().height
 
   /* Busca a lista de Pokémons na API */
   useEffect(async () => {
@@ -45,6 +48,8 @@ export default props => {
   async function paginate(offset) {
     let newList = pokemons
 
+    setAwaitingPagination(true)
+
     try {
       const { data } = await api.get(`https://pokeapi.co/api/v2/pokemon?limit=20&offset=${offset}`)
 
@@ -52,11 +57,16 @@ export default props => {
       setCount(count+20)
     } catch(err) {
       showError(err)
+    } finally {
+      setAwaitingPagination(false)
     }
   }
 
   /* Busca Pokémon específico */
   async function searchPokemon(str) {
+    const pattern = /({|}|"|')/
+    if (pattern.test(str)) return showError({ message: "Invalid string." })
+
     setWaitingForResults(true)
     setSearchSent(true)
 
@@ -95,11 +105,24 @@ export default props => {
     )
   }
 
+  /* Renderiza o rodapé da FlatList */
+  function renderFooter() {
+    if (awaitingPagination) {
+      return (
+        <View style={{ margin: 10 }}>
+          <ActivityIndicator size="large" color="#000" />
+        </View>
+      )
+    } else {
+      return null
+    }
+  }
+
   /* Renderização */
   if (pokemons.length !== 0)
   {
     return (
-      <SafeAreaView style={styles.container}>
+      <SafeAreaView style={[styles.container, { minHeight: windowHeight }]}>
         {/* Título */}
         <Text style={styles.title}>Pokédex</Text>
 
@@ -129,6 +152,7 @@ export default props => {
               showsVerticalScrollIndicator={false}
               numColumns={2}
               onEndReached={() => paginate(count)}
+              ListFooterComponent={renderFooter}
             />
           }
           {

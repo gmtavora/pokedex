@@ -109,5 +109,5 @@ export function capitalize(str) {
  * 
  */
 export function showError(err) {
-  Alert.alert("Erro", err.message)
+  Alert.alert("Error", err.message)
 }
