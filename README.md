@@ -3,9 +3,9 @@ Uma enciclopédia portátil que os treinadores podem utilizar para consultar as 
 
 ## Observações
 
-Não usei conceitos como Redux porque não achei necessário. Também por isso, não desenvolvi um Backend com Express e Banco de Dados. Entretanto,
-caso houvesse mais tempo, seria possível desenvolver uma versão mais complexa, que aceitasse cadastro de usuários para armazenar certas informações.
-Nesse contexto, o usuário poderia criar sua equipe, selecionar as habilidades de cada Pokémon nela, entre outras informações. Também seria interessante
+Não usei conceitos como Redux, Express ou Banco de Dados porque complicaria desnecessariamente a aplicação. Entretanto,
+caso houvesse mais tempo, seria possível desenvolver uma versão mais complexa, que aceitasse cadastro de usuários para armazenar informações.
+Seria interessante que o usuário pudesse criar sua equipe, selecionar as habilidades de cada Pokémon nela, entre outros. Também seria interessante
 criar uma tela somente para busca, em que seria possível filtrar os resultados.
 
 ## Software necessário
