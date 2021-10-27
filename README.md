@@ -20,4 +20,5 @@ criar uma tela somente para busca, em que seria possível filtrar os resultados.
 4. Execute o Expo com ```expo start ```
 5. Leia o código QR com o Expo em seu celular.
 
-## Preview
+## APK
+https://we.tl/t-DWT9SuZqyj
