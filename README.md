@@ -21,4 +21,4 @@ criar uma tela somente para busca, em que seria possível filtrar os resultados.
 5. Leia o código QR com o Expo em seu celular.
 
 ## APK
-https://we.tl/t-DWT9SuZqyj
+https://www.dropbox.com/s/3n5grctf5t8e567/pokedex-b6e0d26fb1b44b429137b84901add6d4-signed.apk?dl=0
